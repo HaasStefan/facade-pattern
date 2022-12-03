@@ -41,8 +41,7 @@ export class FacadeService extends ComponentStore<State> {
     pipe(
       switchMap(() =>
         this.getUsers().pipe(
-          tapResponse((users) => this.patchState({ users }), console.error),
-          tap(console.warn)
+          tapResponse((users) => this.patchState({ users }), console.error)
         )
       )
     )

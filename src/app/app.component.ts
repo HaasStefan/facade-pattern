@@ -16,7 +16,6 @@ export class AppComponent {
   ) {}
 
   selectUser(user: User) {
-    console.log(user)
     this.facade.selectUser(user);
   }
 
