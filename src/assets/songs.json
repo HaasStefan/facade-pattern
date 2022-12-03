@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "title": "Black Summer",
+        "interpret": "Red Hot Chilli Peppers",
+        "releaseDate": "2022-01-01"
+    },
+    {
+        "id": 2,
+        "title": "Californication",
+        "interpret": "Red Hot Chilli Peppers",
+        "releaseDate": "2022-01-01"
+    },
+    {
+        "id": 3,
+        "title": "Where is my mind",
+        "interpret": "Pixies",
+        "releaseDate": "2022-01-01"
+    },
+    {
+        "id": 4,
+        "title": "Don't Forget Me",
+        "interpret": "Red Hot Chilli Peppers",
+        "releaseDate": "2022-01-01"
+    }
+]

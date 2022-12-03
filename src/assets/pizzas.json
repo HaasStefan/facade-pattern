@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "name": "Salame",
+    "ingredients": ["Tomatos", "Cheese", "Salame"]
+  },
+  {
+    "id": 2,
+    "name": "Tuna",
+    "ingredients": ["Tomatos", "Cheese", "Tuna"]
+  }
+]

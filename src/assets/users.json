@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "email": "john@doe.com",
+        "favourites": {
+            "pizzaId": 2,
+            "songId": 3
+        }
+    },
+    {
+        "id": 2,
+        "email": "jane@doe.com",
+        "favourites": {
+            "pizzaId": 1,
+            "songId": 2
+        }
+    }
+]
