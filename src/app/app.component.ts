@@ -19,4 +19,8 @@ export class AppComponent {
     console.log(user)
     this.facade.selectUser(user);
   }
+
+  load() {
+    this.facade.loadUsers();
+  }
 }

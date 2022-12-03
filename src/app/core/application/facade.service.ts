@@ -6,6 +6,9 @@ import {
   map,
   mergeMap,
   Observable,
+  pipe,
+  switchMap,
+  tap,
   throwError,
 } from 'rxjs';
 import { User } from '../entities/view-models/user.model';
@@ -23,8 +26,8 @@ interface State {
   providedIn: 'root',
 })
 export class FacadeService extends ComponentStore<State> {
-  readonly selectedUser$ = this.select(
-    ({ users, selectedUser }) => users.find(u => u.id === selectedUser?.id)
+  readonly selectedUser$ = this.select(({ users, selectedUser }) =>
+    users.find((u) => u.id === selectedUser?.id)
   );
 
   readonly users$ = this.select(({ users }) => users);
@@ -34,9 +37,14 @@ export class FacadeService extends ComponentStore<State> {
     selectedUser: user,
   }));
 
-  readonly loadUsers = this.effect(() =>
-    this.getUsers().pipe(
-      tapResponse((users) => this.patchState({ users }), console.error)
+  readonly loadUsers = this.effect<void>(
+    pipe(
+      switchMap(() =>
+        this.getUsers().pipe(
+          tapResponse((users) => this.patchState({ users }), console.error),
+          tap(console.warn)
+        )
+      )
     )
   );
 
