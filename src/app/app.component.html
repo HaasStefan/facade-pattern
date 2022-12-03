@@ -1,11 +1,23 @@
+<p-dropdown
+  [options]="(users$ | async) ?? []"
+  [ngModel]="selectedUser$ | async"
+  (ngModelChange)="selectUser($event)"
+>
+  <ng-template pTemplate="selectedItem" let-item>
+    {{ item.email }}
+  </ng-template>
+  <ng-template pTemplate="item" let-option>
+    {{ option.email }}
+  </ng-template>
+</p-dropdown>
 
-
-<ng-container *ngIf="selectedUser$ | async as selectedUser; else noSelection">
-  Email: {{selectedUser.email}} <br>
-  Favourite Pizza: {{ selectedUser.favourites.pizza?.name }} <br>
-  Favourite Song: {{ selectedUser.favourites.song?.title }} <br>
-</ng-container>
+<p-card>
+  <ng-container *ngIf="selectedUser$ | async as selectedUser; else noSelection">
+    <pre>{{ selectedUser | json }}</pre>
+  </ng-container>
+</p-card>
 
 <ng-template #noSelection>
-  No User Selected!
+  <i class="pi pi-info-circle"></i>
+  No user selected
 </ng-template>

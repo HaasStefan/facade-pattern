@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FacadeService } from './core/application/facade.service';
+import { User } from './core/entities/view-models/user.model';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,8 @@ export class AppComponent {
     private readonly facade: FacadeService
   ) {}
 
-  selectUser(id: number) {
-    this.facade.selectUser(id);
+  selectUser(user: User) {
+    console.log(user)
+    this.facade.selectUser(user);
   }
 }

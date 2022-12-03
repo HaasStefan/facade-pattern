@@ -15,7 +15,7 @@ import { SongService } from '../infrastructure/song.service';
 import { UserService } from '../infrastructure/user.service';
 
 interface State {
-  selectedUser: number;
+  selectedUser: User | null;
   users: User[];
 }
 
@@ -24,14 +24,14 @@ interface State {
 })
 export class FacadeService extends ComponentStore<State> {
   readonly selectedUser$ = this.select(
-    ({ users, selectedUser }) => users[selectedUser]
+    ({ users, selectedUser }) => users.find(u => u.id === selectedUser?.id)
   );
 
   readonly users$ = this.select(({ users }) => users);
 
-  readonly selectUser = this.updater((state: State, id: number) => ({
+  readonly selectUser = this.updater((state: State, user: User) => ({
     ...state,
-    selectedUser: id,
+    selectedUser: user,
   }));
 
   readonly loadUsers = this.effect(() =>
@@ -46,7 +46,7 @@ export class FacadeService extends ComponentStore<State> {
     private readonly songService: SongService
   ) {
     super({
-      selectedUser: -1,
+      selectedUser: null,
       users: [],
     });
   }
