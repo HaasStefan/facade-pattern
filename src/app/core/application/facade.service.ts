@@ -3,12 +3,13 @@ import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import {
   combineLatest,
   combineLatestAll,
+  filter,
   map,
   mergeMap,
   Observable,
+  of,
   pipe,
   switchMap,
-  tap,
   throwError,
 } from 'rxjs';
 import { User } from '../entities/view-models/user.model';
@@ -18,8 +19,8 @@ import { SongService } from '../infrastructure/song.service';
 import { UserService } from '../infrastructure/user.service';
 
 interface State {
-  selectedUser: User | null;
-  users: User[];
+  selectedUser: number;
+  users: UserStateModel[];
 }
 
 @Injectable({
@@ -27,22 +28,31 @@ interface State {
 })
 export class FacadeService extends ComponentStore<State> {
   readonly selectedUser$ = this.select(({ users, selectedUser }) =>
-    users.find((u) => u.id === selectedUser?.id)
+    users.find((u) => u.id === selectedUser)
+  ).pipe(
+    filter(user => !!user),
+    switchMap((user) =>
+      user ? of(user).pipe(this.mapOneToViewModel()) : of(user)
+    ),
   );
 
-  readonly users$ = this.select(({ users }) => users);
+  readonly users$ = this.select(({ users }) => users).pipe(
+    this.mapArrayToViewModel()
+  );
 
   readonly selectUser = this.updater((state: State, user: User) => ({
     ...state,
-    selectedUser: user,
+    selectedUser: user.id,
   }));
 
   readonly loadUsers = this.effect<void>(
     pipe(
       switchMap(() =>
-        this.getUsers().pipe(
-          tapResponse((users) => this.patchState({ users }), console.error)
-        )
+        this.userService
+          .getAll()
+          .pipe(
+            tapResponse((users) => this.patchState({ users }), console.error)
+          )
       )
     )
   );
@@ -53,16 +63,31 @@ export class FacadeService extends ComponentStore<State> {
     private readonly songService: SongService
   ) {
     super({
-      selectedUser: null,
+      selectedUser: -1,
       users: [],
     });
   }
 
-  private getUsers(): Observable<User[]> {
-    return this.userService.getAll().pipe(
-      mergeMap((users) => users.map((u) => this.getUser(u))),
-      combineLatestAll()
-    );
+  private mapArrayToViewModel(): (
+    source$: Observable<UserStateModel[]>
+  ) => Observable<User[]> {
+    return (source$) =>
+      source$.pipe(
+        switchMap((users) =>
+          users && users.length > 0
+            ? of(users).pipe(
+                mergeMap((users) => users.map((u) => this.getUser(u))),
+                combineLatestAll()
+              )
+            : of([])
+        )
+      );
+  }
+
+  private mapOneToViewModel(): (
+    source$: Observable<UserStateModel>
+  ) => Observable<User> {
+    return (source$) => source$.pipe(switchMap((user) => this.getUser(user)));
   }
 
   private getUser(user: UserStateModel | null): Observable<User> {
